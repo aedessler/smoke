@@ -1,0 +1,10 @@
+# not published
+dashboard/
+data/
+maiac_aws_to_google_vm_25km_plan.md
+
+# local cruft
+.DS_Store
+__pycache__/
+*.pyc
+.plotcache/
