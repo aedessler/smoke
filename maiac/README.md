@@ -4,9 +4,10 @@ Monthly 25 km gridded aerosol optical depth and smoke-condition statistics over
 the contiguous United States, built from raw NASA MCD19A2.061 granules on a
 Google Compute Engine spot VM. No Earth Engine.
 
-Implements [`../maiac_aws_to_google_vm_25km_plan.md`](../maiac_aws_to_google_vm_25km_plan.md),
-deployed with the `gcp-spot-batch-job` pattern. The previous Earth Engine
-implementation of the same science question is in [`../maiac_ee/`](../maiac_ee/).
+Implements `../maiac_aws_to_google_vm_25km_plan.md` (a working note kept outside
+this repository), deployed with the `gcp-spot-batch-job` pattern. The previous
+Earth Engine implementation of the same science question, `../maiac_ee/`, is
+likewise unpublished.
 
 ```
 NASA CMR  ->  authenticated HTTPS  ->  GCE spot VM  ->  monthly NetCDF  ->  GCS

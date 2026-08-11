@@ -3,8 +3,8 @@
 Monthly, 25 km, CONUS-wide aerosol optical depth and smoke-condition statistics from MODIS
 MAIAC (`MCD19A2.061`), 2000-02 → 2025-07.
 
-**Why it exists.** The NOAA HMS product in [`../noaa/`](../noaa/) is *hand-drawn by analysts*;
-this one is *retrieved by an algorithm*. The two fail in unrelated ways, which is the entire
+**Why it exists.** It is the algorithmic half of a pair. The companion NOAA HMS product (kept
+outside this repository) is *hand-drawn by analysts*; this one is *retrieved by an algorithm*. The two fail in unrelated ways, which is the entire
 point. The analyst-practice drift documented in the HMS caveats — the shift to fewer,
 continental-scale polygons — has no counterpart in MAIAC. MAIAC's own biases (cloud screening,
 bright-surface retrieval failures, orbital sampling) have no counterpart in HMS. Where they
@@ -15,20 +15,26 @@ agree, the signal is probably real.
 ## Layout
 
 ```
-maiac/                              the pipeline — raw NASA granules on a GCE spot VM
-                                    (see maiac/README.md for everything operational)
-maiac_ee.zip                        superseded Earth Engine implementation, archived
-maiac_aws_to_google_vm_25km_plan.md the plan maiac/ implements
-monthly_maiac_smoke_aod_25km_netcdf_plan.md   the earlier Earth Engine plan
+maiac/        the pipeline — raw NASA granules on a GCE spot VM
+              (see maiac/README.md for everything operational)
+figures/      example month maps
+```
+
+Commands throughout assume the repository root as the working directory
+(`python3 maiac/plot_month.py data/maiac/monthly/…`).
+
+**Not in this repository.** The paths below are referenced throughout because that is where the
+code writes and reads them, but they are outputs and working notes rather than source, so they
+are not published here. Running the pipeline recreates `data/`; the rest is local:
+
+```
 data/maiac_smoke_25km_monthly.nc    the combined archive — the file you want
 data/maiac/monthly/                 306 per-month NetCDF checkpoints
 data/maiac/manifest.csv             per-month run records
-figures/                            example month maps
-dashboard/                          click-a-cell index browser (see dashboard/README.md)
+dashboard/                          click-a-cell index browser, plus its own README
+maiac_ee/                           superseded Earth Engine implementation, archived
+maiac_aws_to_google_vm_25km_plan.md the plan maiac/ implements
 ```
-
-Commands in [`maiac/README.md`](maiac/README.md) assume this folder as the working directory
-(`python3 maiac/plot_month.py data/maiac/monthly/…`), so `cd modis` first.
 
 ## Two implementations, one science question
 
@@ -37,7 +43,7 @@ authenticated HTTPS and aggregates them on a Google Compute Engine spot VM. No E
 Full archive run of record — 306/306 months, 0 failures, 1,068 GB transferred in ~2.5 h — is
 documented in [`maiac/README.md`](maiac/README.md).
 
-`maiac_ee.zip` is the **superseded** Earth Engine version, kept only because
+`maiac_ee/` (kept locally, not published here) is the **superseded** Earth Engine version, kept only because
 `crosscheck_vs_hms.py` inside it is the obvious starting point for validating against HMS. Its
 variable names and time span differ from the current product; do not mix outputs from the two.
 
@@ -138,7 +144,8 @@ boundary need care.
 
 A click-a-cell CONUS browser for `smoke_aod_index`, annual or monthly, as one self-contained
 HTML file. Build it and everything about it — packing, sampling floor, class breaks, rebuilding
-when the archive grows — is in [`dashboard/README.md`](dashboard/README.md).
+when the archive grows — is in `dashboard/README.md`, alongside the builder. Neither is
+published here.
 
 ```bash
 python3 dashboard/build_dashboard.py && open dashboard/smoke_dashboard.html
@@ -148,12 +155,12 @@ python3 dashboard/build_dashboard.py && open dashboard/smoke_dashboard.html
 
 The check worth running, and the one most likely to catch a QA-bit decoding error that every
 range and shape check would pass: annual CONUS-mean `smoke_pixel_day_fraction` against annual
-HMS smoke-covered area from `../noaa/data/processed/`, 2006–2025.
+HMS smoke-covered area from the companion NOAA HMS product, 2006–2025.
 
 They measure different things and will not agree in magnitude. The **interannual ranking**
 should agree — 2020, 2021 and 2023 high. A flat or anti-correlated series means the aerosol
 model bits are being read wrong, not that the two datasets disagree. This has **not yet been
-run** against the current product; `crosscheck_vs_hms.py` in `maiac_ee.zip` did it for the
+run** against the current product; `crosscheck_vs_hms.py` in `maiac_ee/` did it for the
 Earth Engine version.
 
 Note the record lengths differ, and pre-2002 months are **Terra-only** — Aqua joins mid-2002,
