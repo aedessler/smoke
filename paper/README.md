@@ -136,25 +136,3 @@ network access and no credentials: everything reads the archives already on disk
 
 There is no local `.docx → PDF` converter on this machine (no LibreOffice, no pandoc),
 so open the `.docx` in Word to check pagination.
-
-## Before submitting
-
-**The reference list has not been checked against the literature.** It was assembled from
-memory; verify every author list, year, volume and page range before posting to a
-preprint server.
-
-**Seven of the fifteen entries are not cited anywhere in the text** — Benjamini &
-Hochberg 1995, Brey et al. 2018, Childs et al. 2022, Kaulfus et al. 2017, Livezey & Chen
-1983, Lyapustin & Wang 2022, Superczynski et al. 2017. Either cite them or cut them. Two
-are worth citing rather than cutting: Lyapustin & Wang 2022 is the MCD19A2.061 data DOI,
-and Section 6 currently links an Earthdata catalog URL instead; Livezey & Chen 1983 is
-the method behind the stippling still described in the Figure 4 caption.
-
-Related: **"field significance" is still in the keyword list** but nothing in the text
-supports it, and Theil, Sen and Kendall are named throughout the text but no longer
-appear in the reference list.
-
-The Terra and Aqua orbit-drift caveat is not quantified anywhere in this repository, and
-as of the current draft it is no longer stated in the manuscript either. If a reviewer
-raises it, it will need either a citation to the drift record or an analysis of overpass
-time against the residual.
