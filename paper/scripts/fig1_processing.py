@@ -110,7 +110,7 @@ def main() -> int:
     side_y = 115.0 - side_h
     box(ax, SIDE_X, side_y, SIDE_W, side_h, "NOAA HMS",
         "Analyst-drawn smoke\npolygons, dissolved per\nUTC day, clipped to\nCONUS, binned to a\n0.1° grid.\n\n"
-        "Only the heavy density\nclass is used, and only\nin §5.",
+        "Only the heavy density\nclass is used, and only\nin §4.",
         M.HMS_C, SIDE_FACE, title_size=8.4, body_size=7.4)
     # down the margin, then left into the results box
     ax.add_patch(FancyArrowPatch(
@@ -119,7 +119,7 @@ def main() -> int:
         zorder=1, linestyle=(0, (3, 2)), shrinkA=2, shrinkB=0,
         connectionstyle="angle,angleA=-90,angleB=180,rad=2"))
     ax.text(SIDE_X + SIDE_W / 2 + 1.4, side_y - 22,
-            "independent\ncheck  (§5)", fontsize=7.3, color=M.HMS_C,
+            "independent\ncheck  (§4)", fontsize=7.3, color=M.HMS_C,
             va="center", ha="left", linespacing=1.5)
 
     fig.tight_layout(pad=0.3)
