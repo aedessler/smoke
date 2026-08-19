@@ -5,9 +5,7 @@ the contiguous United States, built from raw NASA MCD19A2.061 granules on a
 Google Compute Engine spot VM. No Earth Engine.
 
 Implements `../maiac_aws_to_google_vm_25km_plan.md` (a working note kept outside
-this repository), deployed with the `gcp-spot-batch-job` pattern. The previous
-Earth Engine implementation of the same science question, `../maiac_ee/`, is
-likewise unpublished.
+this repository), deployed with the `gcp-spot-batch-job` pattern.
 
 ```
 NASA CMR  ->  authenticated HTTPS  ->  GCE spot VM  ->  monthly NetCDF  ->  GCS
@@ -343,6 +341,7 @@ from raw retrievals, with no fire data as input.
 - **The permissive-quality sensitivity run (plan §25) is implemented but not
   run.** `--permissive-quality` accepts AOD quality 0 and 11. Send it to a
   separate `--gcs-prefix`; it must never merge into the primary record.
-- **Not yet validated against** NOAA HMS, AERONET, or surface PM2.5 (plan §24).
-  `crosscheck_vs_hms.py` in `../maiac_ee/` did this for the Earth Engine
-  product and is the obvious starting point.
+- **Validated against NOAA HMS, not against AERONET or surface PM2.5** (plan
+  §24). `../../paper/` compares this product to HMS heavy-density smoke days
+  over 2003–2024 — r = 0.960 monthly, 0.946 annual, regression slope 0.96 — in
+  `paper/scripts/fig6_validation.py`. AERONET and surface PM2.5 remain open.

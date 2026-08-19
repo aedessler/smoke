@@ -1,10 +1,16 @@
 # not published
-dashboard/
-data/
-maiac_aws_to_google_vm_25km_plan.md
+modis/dashboard/
+modis/data/
+modis/maiac_aws_to_google_vm_25km_plan.md
+noaa/data/
+noaa/figures/
+paper/results/
+paper/maiac_conus_smoke_record.docx
 
 # local cruft
 .DS_Store
 __pycache__/
 *.pyc
 .plotcache/
+*.log
+~$*

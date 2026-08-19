@@ -1,143 +1,52 @@
-# MODIS MAIAC smoke AOD over CONUS
+# Smoke over the contiguous United States
 
-Monthly, 25 km, CONUS-wide aerosol optical depth and smoke-condition statistics from MODIS
-MAIAC (`MCD19A2.061`), 2000-02 → 2025-07.
+Two independent measurements of the same thing, kept side by side on purpose, and a paper
+that reads one against the other.
+
+| Folder | Product | Record | Source |
+|---|---|---|---|
+| [`noaa/`](noaa/) | Smoke-covered area and gridded smoke-days, from NOAA HMS smoke polygons | 2006–2025 | NOAA NESDIS Hazard Mapping System |
+| [`modis/`](modis/) | Monthly 25 km AOD and smoke-condition statistics, from MODIS MAIAC | 2000-02 → 2025-07 | NASA `MCD19A2.061` |
+| [`paper/`](paper/) | The manuscript on what the MAIAC record shows, its figures, and the code behind them | 2003–2024 window | both of the above |
+
+The HMS polygons are **hand-drawn by NOAA analysts** tracing visible smoke in
+satellite imagery. The MAIAC fields are remotely sensed values. The two
+fail in unrelated ways, which is the entire point: analyst practice drifted mid-record (HMS
+analysts shifted to fewer, continental-scale polygons around 2017–2020, which inflates recent
+years), and that drift has no counterpart in MAIAC. MAIAC's own biases — cloud screening,
+bright-surface retrieval failures, snow-covered winters, orbital sampling — have no counterpart
+in HMS. Where the two agree, the signal is probably robust.
 
 ---
 
-## Layout
+`noaa/` and `modis/` are self-contained — each has its own code, data, figures and README,
+with paths resolved relative to itself, and neither imports from the other. `paper/` is the
+one thing that spans them: it reads both archives and reports the MAIAC record with HMS as
+an independent check. Start with:
 
-```
-maiac/        the pipeline — raw NASA granules on a GCE spot VM
-              (see maiac/README.md for everything operational)
-figures/      example month maps
-```
+- [`noaa/README.md`](noaa/README.md) — method, outputs, and the caveats that matter most
+  (density is unusable before 2011; the density classes are nested, not disjoint; polygon area
+  is extremely long-tailed).
+- [`modis/README.md`](modis/README.md) — what the six variables actually mean, why
+  `mean_smoke_aod_055` is *not* smoke-only AOD, and why every ratio must be read next to its
+  sample-size weight.
+- [`paper/README.md`](paper/README.md) — the headline numbers, the three decisions that shape
+  all of them, and what the code computes that the paper no longer reports.
 
-Commands throughout assume the repository root as the working directory
-(`python3 maiac/plot_month.py data/maiac/monthly/…`).
-
-**Not in this repository.** The paths below are referenced throughout because that is where the
-code writes and reads them, but they are outputs and working notes rather than source, so they
-are not archived here. Running the pipeline recreates `data/`; the rest is local:
-
-```
-data/maiac_smoke_25km_monthly.nc    the combined archive — the file you want
-data/maiac/monthly/                 306 per-month NetCDF checkpoints
-data/maiac/manifest.csv             per-month run records
-dashboard/                          click-a-cell index browser, plus its own README
-maiac_ee/                           superseded Earth Engine implementation, archived
-maiac_aws_to_google_vm_25km_plan.md the plan maiac/ implements
+```bash
+cd noaa  && python3 process_smoke.py && python3 plot_smoke.py
+cd modis && python3 maiac/plot_month.py data/maiac/monthly/maiac_smoke_25km_2023_06.nc
+cd paper && python3 scripts/make_all.py
 ```
 
-## Two implementations, one science question
+**Not in this repository.** The data trees are outputs rather than source, and are large, so
+they are not archived here: `noaa/data/`, `modis/data/`, and the derived `paper/results/`.
+`noaa/figures/` is regenerated in a minute from `noaa/data/processed/` and is likewise left
+out; the `modis/` and `paper/` figures *are* here. The manuscript itself
+(`paper/maiac_conus_smoke_record.docx`) is not published. The practical consequence: a fresh
+clone gets all the code and the paper's figures, but the first two commands above have to be
+run — in that order — before the third has anything to read.
 
-The **current** product is `maiac/`: it downloads raw `MCD19A2.061` HDF granules from NASA over
-authenticated HTTPS and aggregates them on a Google Compute Engine spot VM. No Earth Engine.
-Full archive run of record — 306/306 months, 0 failures, 1,068 GB transferred in ~2.5 h — is
-documented in [`maiac/README.md`](maiac/README.md).
-
-`maiac_ee/` (kept locally, not published here) is the **superseded** Earth Engine version, kept only because
-`crosscheck_vs_hms.py` inside it is the starting point for validating against HMS. Its
-variable names and time span differ from the current product; do not mix outputs from the two.
-
-## The archive file
-
-`data/maiac_smoke_25km_monthly.nc` — dims `time × y × x` = 306 × 130 × 242, EPSG:5070 CONUS
-Albers, 25 km, monthly 2000-02 → 2025-07. Built by `maiac/concat_archive.py` from the monthly
-checkpoints, which re-checks that every month shares one grid before combining.
-
-All six variables are built from **four accumulators** per 25 km cell per month, which is why
-they are so tightly related:
-
-```
-one observation      →  QA screen: land, best quality (AOD_QA bits 8-11 == 0), AOD >= 0
-one native pixel-day →  A = mean AOD over that day's valid obs (Terra+Aqua averaged)
-   (1 km, 1 day)        B = 1 if any valid obs
-                        C = mean AOD over obs where the smoke model was selected
-                        D = 1 if any smoke obs
-one 25 km cell/month →  sum A, B, C, D over all pixels and all days
-```
-
-The file stores `ΣB` and `ΣD` directly plus three ratios. Medians and NaN fractions below are
-measured over the archive as shipped:
-
-| Variable | Formula | Answers | Median | NaN |
-|---|---|---|---|---|
-| `valid_pixel_day_weight` | `ΣB` | **Sample size** — 1 km pixel-days that survived QA (0 → 23,142) | — | 0 % |
-| `smoke_pixel_day_weight` | `ΣD` | How many of those had the smoke model selected | — | 0 % |
-| `smoke_pixel_day_fraction` | `ΣD/ΣB` | **How often** — smoke frequency, in [0, 1] | 0.00 | 60.2 % |
-| `mean_aod_055` | `ΣA/ΣB` | **How hazy overall** — coverage-weighted mean 550 nm AOD | 0.10 | 60.2 % |
-| `mean_smoke_aod_055` | `ΣC/ΣD` | **How thick when smoky** — AOD conditional on smoke | 0.32 | 89.9 % |
-| `smoke_aod_index` | `ΣC/ΣB` | **How smoky, full stop** — frequency × intensity | 0.00 | 60.2 % |
-
-`crs` is not data. It is a 4-byte CF grid-mapping stub carrying the projection (Albers
-equal-area, standard parallels 29.5/45.5, central meridian −96°, EPSG:5070); every other
-variable points at it via `grid_mapping`. `units = 1` throughout means dimensionless — AOD
-genuinely has no units.
-
-Two identities hold in the file (verified, not just intended):
-
-```
-smoke_aod_index          = smoke_pixel_day_fraction × mean_smoke_aod_055   (to 2e-7, float32 noise)
-smoke_pixel_day_fraction = smoke_pixel_day_weight / valid_pixel_day_weight (exact)
-```
-
-The index factorizes cleanly into occurrence × intensity. That is the whole reason all three
-smoke variables exist rather than one.
-
-### Three things to know before using it
-
-**1. `mean_smoke_aod_055` is not smoke-only AOD.** MAIAC does not retrieve separate smoke and
-background optical depths. The `AOD_QA` aerosol-model bits say which aerosol model the
-retrieval *selected*, nothing more, and `Optical_Depth_055` remains total-column AOD under that
-model. Reporting it as the smoke contribution to total AOD would be wrong.
-
-The two companion fields split the signal: `smoke_pixel_day_fraction` isolates **occurrence**;
-`smoke_aod_index` combines occurrence and magnitude, since non-smoke valid days contribute zero
-to the numerator but still count in the denominator. For "how smoky was this month," the index
-is usually what you want — the conditional mean is conditioned on an event whose frequency is
-itself the signal.
-
-It is also **NaN exactly where the answer is "no smoke."** That is the 89.9 % NaN in the table
-against 60.2 % for the other ratios: the extra ~30 % is cells where `ΣD = 0`, leaving the
-conditional mean undefined. Average it over time or space and you silently drop every clean
-case, biasing the result high — its median of 0.32 is three times `mean_aod_055`'s partly for
-this reason. `smoke_aod_index` is **0** in those same cells, which is the truthful value.
-
-(The 60.2 % NaN floor shared by the other ratios is the CONUS mask plus zero-coverage cells:
-only 13,076 of the 31,460 cells in the bounding rectangle fall inside the U.S. boundary.)
-
-**2. Aggregation is a ratio of sums, not a mean of means.** Screen at native 1 km → collapse to
-pixel-days → sum through the month → bin to 25 km → *then* form ratios. The same logic applies
-across **time**, which is why the weights are in the file:
-
-```python
-annual = ds["mean_aod_055"] * ds["valid_pixel_day_weight"]   # weight before averaging
-annual = annual.sum("time") / ds["valid_pixel_day_weight"].sum("time")   # right
-annual = ds["mean_aod_055"].mean("time")                                 # biased
-```
-
-The bias is worst exactly where it matters most — winter and the cloudy Pacific Northwest,
-where valid-day counts swing hardest month to month.
-
-**3. Read every ratio next to its weight.** A cell with 3 valid pixel-days and one with 23,000
-both produce a `mean_aod_055`, and only one of them means anything:
-
-```python
-ds = ds.where(ds["valid_pixel_day_weight"] >= 5)   # reasonable first pass; vary it
-```
-
-Coverage runs 28.6–41.5 % of the grid rectangle; the low end is winter, where snow sets the QA
-bits away from "land" and those pixels are correctly excluded rather than retrieved through
-snow. `valid_pixel_day_weight` also **steps up in mid-2002** when Aqua joins Terra, roughly
-doubling observations per pixel-day — a real feature of the record, but trends spanning that
-boundary need care.
-
-
-## Requirements
-
-Reading the archive locally needs only `xarray`, `netCDF4`, `numpy`, `matplotlib` (and
-`rioxarray` + `requests` for `maiac/plot_month.py`). The pipeline itself needs `earthaccess`,
-`google-cloud-storage` and an HDF4-capable GDAL, but only on the VM —
-`maiac/startup_script.sh` installs them there. Nothing in `maiac/` needs to run locally, and
-its 44 tests run without credentials, network or GDAL.
+Common caveats for both products: **smoke aloft is not surface exposure** — these are top-down
+views, so pair with surface PM2.5 for air-quality work — and **day boundaries are UTC**, so a
+west-coast evening plume can land on the next day.
