@@ -43,9 +43,10 @@ cd paper && python3 scripts/make_all.py
 they are not archived here: `noaa/data/`, `modis/data/`, and the derived `paper/results/`.
 `noaa/figures/` is regenerated in a minute from `noaa/data/processed/` and is likewise left
 out; the `modis/` and `paper/` figures *are* here. The manuscript itself
-(`paper/maiac_conus_smoke_record.docx`) is not published. The practical consequence: a fresh
-clone gets all the code and the paper's figures, but the first two commands above have to be
-run — in that order — before the third has anything to read.
+(`paper/maiac_conus_smoke_record*.docx`, including the redlined revision) is not published.
+The practical consequence: a fresh clone gets all the code and the paper's figures, but the
+first two commands above have to be run — in that order — before the third has anything to
+read.
 
 Common caveats for both products: **smoke aloft is not surface exposure** — these are top-down
 views, so pair with surface PM2.5 for air-quality work — and **day boundaries are UTC**, so a

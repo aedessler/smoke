@@ -22,10 +22,11 @@ STEPS = [
     ("run_analysis.py", "statistics -> ../results/"),
     ("fig1_processing.py", "Fig 1  the processing chain"),
     ("fig2_record.py", "Fig 2  the CONUS record and its trend"),
-    ("fig3_decomposition.py", "Fig 3  frequency against intensity"),
-    ("fig4_maps.py", "Fig 4  spatial distribution and trend"),
-    ("fig5_season.py", "Fig 5  seasonal timing"),
-    ("fig6_validation.py", "Fig 6  against NOAA HMS heavy smoke"),
+    ("fig3_annual_panel.py", "Fig 3  the record year by year"),
+    ("fig4_decomposition.py", "Fig 4  frequency against intensity"),
+    ("fig5_maps.py", "Fig 5  spatial distribution and trend"),
+    ("fig6_season.py", "Fig 6  seasonal timing"),
+    ("fig7_validation.py", "Fig 7  against NOAA HMS heavy smoke"),
 ]
 
 

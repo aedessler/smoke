@@ -5,7 +5,7 @@ modis/maiac_aws_to_google_vm_25km_plan.md
 noaa/data/
 noaa/figures/
 paper/results/
-paper/maiac_conus_smoke_record.docx
+paper/maiac_conus_smoke_record*.docx
 
 # local cruft
 .DS_Store

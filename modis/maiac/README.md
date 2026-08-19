@@ -344,4 +344,4 @@ from raw retrievals, with no fire data as input.
 - **Validated against NOAA HMS, not against AERONET or surface PM2.5** (plan
   §24). `../../paper/` compares this product to HMS heavy-density smoke days
   over 2003–2024 — r = 0.960 monthly, 0.946 annual, regression slope 0.96 — in
-  `paper/scripts/fig6_validation.py`. AERONET and surface PM2.5 remain open.
+  `paper/scripts/fig7_validation.py`. AERONET and surface PM2.5 remain open.

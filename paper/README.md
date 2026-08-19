@@ -7,7 +7,9 @@ python3 scripts/make_all.py     # statistics -> results/, figures -> figures/   
 ```
 
 The manuscript itself is no longer generated. It is hand-edited in Word, as
-`maiac_conus_smoke_record.docx`.
+`maiac_conus_smoke_record.docx`. `maiac_conus_smoke_record_revised.docx` is that file
+with Figure 3 added and Figures 3–6 renumbered to 4–7, carried as tracked changes for
+review; accept them in Word and it becomes the next `maiac_conus_smoke_record.docx`.
 
 `make_all.py` reads the two archives in the sibling folders — `../modis/data/` and
 `../noaa/data/processed/` — neither of which is in this repository. Build them first
@@ -44,13 +46,16 @@ scripts/
     common.py           loaders, regridding, smoke-day conversion, design tokens
     maiac_common.py     window, domain, trend machinery; re-exports common.py
     run_analysis.py     the statistics -> results/
-    fig1…fig6_*.py      one script per figure
+    fig1…fig7_*.py      one script per figure
     make_all.py         runs the above in order, each in its own process
-figures/                the six figures, 200 dpi PNG
+figures/                the seven figures, 200 dpi PNG
 results/                the audit trail (see below)
 
-maiac_conus_smoke_record.docx   the manuscript, edited by hand (not in this repository)
+maiac_conus_smoke_record.docx           the manuscript, edited by hand
+maiac_conus_smoke_record_revised.docx   the same, with the Figure 3 redline on top
 ```
+
+Neither `.docx` is in this repository.
 
 **Definitions live in one place.** `maiac_common.py` imports the loaders, the regridding
 and the smoke-day conversion from `common.py` rather than reimplementing them. What it
@@ -60,9 +65,20 @@ permutation machinery.
 **Figures do not read `results/`.** Each figure script recomputes what it draws from the
 archive. `results/` is the audit trail for the numbers in the text.
 
+**`fig3_annual_panel.py` has a sibling that is not a duplicate.**
+`../modis/maiac/plot_annual_panel.py` lays out the same years the same way but draws the
+raw smoke frequency across the whole 2000–2025 archive; this one draws smoke days on the
+2003–2024 window and the fixed domain, so its panels match Figure 5a and the annual series.
+The two PNGs are not meant to agree.
+
 **The manuscript is edited by hand.** The figures in the `.docx` are embedded copies. If
 you regenerate a PNG, re-insert it in Word — nothing does that for you, and nothing
 checks that the embedded copy still matches the file on disk.
+
+**Figure numbers live in the `.docx`, not in the code.** The script names carry them
+(`fig5_maps.py` draws Figure 5) but nothing verifies the two agree. Inserting a figure
+means renumbering the scripts, the PNGs, `make_all.py`, the captions and every in-text
+`Fig. n` by hand.
 
 ### `results/`
 
@@ -119,7 +135,7 @@ twenty. The observed 77 % does not clear that (p = 0.066). What does clear it is
 *count of locally significant cells*: 35 % against a null 95th percentile of 18 %,
 field significance p = 0.009 (Livezey & Chen 1983). Meanwhile only 0.9 % of cells survive
 a Benjamini–Hochberg FDR correction individually — the map carries a signal, the
-individual 25 km cell does not. Only the stippling in Figure 4b survives into the paper.
+individual 25 km cell does not. Only the stippling in Figure 5b survives into the paper.
 
 **The trend depends on 2020 and 2021.** Dropping them halves the slope to +0.17 days
 yr⁻¹ with a CI spanning zero (p = 0.086). `robustness()` in `run_analysis.py` reports the

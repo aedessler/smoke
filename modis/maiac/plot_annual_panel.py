@@ -5,6 +5,12 @@ The MAIAC counterpart to the HMS ../noaa/ smoke-days panel: one small map per
 year, all on one shared color scale so the years are directly comparable. Covers
 the whole record, 2000-02 through 2025-07.
 
+NOT the same figure as ../../paper/scripts/fig3_annual_panel.py, which is the
+manuscript's Figure 3. That one draws smoke *days* on the paper's 2003-2024
+window and its fixed analysis domain; this one draws the raw frequency over the
+whole archive, partial years included, which is what the Substack post used and
+what the archive itself supports without the paper's assumptions. Keep both.
+
 WHAT EACH CELL SHOWS. The share of that cell's valid pixel-days in the year on
 which MAIAC selected a smoke aerosol model, as a ratio of sums over the year's
 months. Not "days per year": MAIAC sees a cell only when cloud, snow and orbit

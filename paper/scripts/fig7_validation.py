@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure 6 -- the MAIAC record against NOAA HMS heavy smoke.
+"""Figure 7 -- the MAIAC record against NOAA HMS heavy smoke.
 
 Only the *heavy* density class appears anywhere in this figure. HMS density
 classes are nested contours drawn by hand, and the outer envelope of any smoke
@@ -10,7 +10,7 @@ aerosol model at all, so it is the like-for-like comparison.
 (a) the two CONUS-aggregate monthly series on their own axes, and (b) all
 cell-years on the common grid.
 
-    python3 fig6_validation.py
+    python3 fig7_validation.py
 """
 
 from __future__ import annotations
@@ -103,7 +103,7 @@ def main() -> int:
               "12,455 common cells × 14 years; dashed 1:1",
               transform=ax_b.transAxes, fontsize=7.6, color=M.INK_2, va="bottom")
 
-    M.save(fig, "fig6_validation.png")
+    M.save(fig, "fig7_validation.png")
     plt.close(fig)
     grid.close()
     return 0

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure 4 -- where the smoke is, and where it is increasing.
+"""Figure 5 -- where the smoke is, and where it is increasing.
 
 (a) the 22-year mean, (b) the per-cell Theil-Sen slope with the cells that
 reach local significance stippled, and (c) the difference between the two
@@ -10,7 +10,7 @@ The stippling in (b) marks cells whose rank correlation with time beats the
 labels leaves the spatial correlation of the field intact, which a per-cell
 p-value cannot do -- neighbouring 25 km cells see the same plumes.
 
-    python3 fig4_maps.py
+    python3 fig5_maps.py
 """
 
 from __future__ import annotations
@@ -113,7 +113,7 @@ def main() -> int:
            "c   Second half minus first",
            "2014–2024 mean − 2003–2013 mean", "days per year", extend="both")
 
-    M.save(fig, "fig4_maps.png")
+    M.save(fig, "fig5_maps.png")
     plt.close(fig)
     ds.close()
     return 0

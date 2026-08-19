@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure 3 -- more often, or thicker?
+"""Figure 4 -- more often, or thicker?
 
 The archive satisfies
 
@@ -11,7 +11,7 @@ two loosely related numbers. All three panels are log axes for that reason: a
 straight line is a constant proportional rate, and the vertical distance
 between panels (a) and (c) is panel (b).
 
-    python3 fig3_decomposition.py
+    python3 fig4_decomposition.py
 """
 
 from __future__ import annotations
@@ -86,7 +86,7 @@ def main() -> int:
              f"more often; the rest is smoke being thicker when it occurs.",
              fontsize=7.5, color=M.INK_2, ha="left", va="bottom", linespacing=1.6)
 
-    M.save(fig, "fig3_decomposition.png")
+    M.save(fig, "fig4_decomposition.png")
     plt.close(fig)
     return 0
 

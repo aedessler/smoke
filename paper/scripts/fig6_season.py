@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Figure 5 -- when in the year the smoke arrives, and where the growth went.
+"""Figure 6 -- when in the year the smoke arrives, and where the growth went.
 
 The mean seasonal cycle in each half of the record, so the change can be read
 month by month. Because differences of means add to the annual difference,
 the twelve gaps between the pairs are a complete accounting of the annual
 change.
 
-    python3 fig5_season.py
+    python3 fig6_season.py
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ def main() -> int:
             "annual change, so this is a full accounting of it.",
             transform=ax.transAxes, fontsize=7.7, color=M.INK_2, va="bottom")
 
-    M.save(fig, "fig5_season.png")
+    M.save(fig, "fig6_season.png")
     plt.close(fig)
     return 0
 
